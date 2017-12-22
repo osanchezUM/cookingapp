@@ -1,0 +1,133 @@
+
+    <div class="container">
+        
+        <div class="row" ng-if="!showRecipe">
+            <h3>{{message}}</h3>
+        </div>
+        
+        <div class="row row-content mb-3 mt-3" ng-if="showRecipe">
+            <div class="col-12">
+                
+                <form  name="editForm" role="form" ng-submit="saveRecipe()" novalidate>
+            
+                    <div class="row recipeHeader">
+                        <div class="col-md-9 col-12 text-left zeroLeftMargin">
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-lg" id="name" name="name" 
+                                       ng-class="{ 'is-invalid' : editForm.name.$error.required && !editForm.name.$pristine }"
+                                       ng-model="recipe.name" aria-describedby="nameHelp" value="{{recipe.name}}" required>
+                                <span ng-show="editForm.name.$error.required && !editForm.name.$pristine" 
+                                      class="invalid-feedback">The title is required</span>
+                                <small id="nameHelp" class="form-text text-muted">Write here the title of your recipe</small>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12 text-right"><h5>by {{recipe.author}}</h5></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-7 mb-3">
+                            <div class="form-group">
+                                <textarea class="form-control" id="ingredients" name="ingredients" rows="12" ng-model="recipe.ingredients"
+                                          ng-class="{ 'is-invalid' : editForm.ingredients.$error.required && !editForm.ingredients.$pristine }"
+                                          aria-describedby="ingredientHelp" style="overflow:auto;resize:none" required>{{recipe.ingredients}}</textarea>
+                                <span ng-show="editForm.ingredients.$error.required && !editForm.ingredients.$pristine" 
+                                      class="invalid-feedback">The ingredients are required</span>
+                                <small id="ingredientHelp" class="form-text text-muted">
+                                    Write here the ingredient list. Please, use a semicolon to mark the end of a line (each ingredient should be in a line).
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-5 mb-3">
+                            <div class="row align-items-start">
+                                <div class="col-12 text-center recipeImgContainer">
+                                    <img src="{{recipe.image}}" alt="" >
+                                    <!--<input type="file" class="form-control-file buttonOverImage" id="imageFile" ng-model="recipe.image">-->
+                                    <input type="file" class="form-control-file buttonOverImage" id="imageFile" fileread="recipe.image">
+                                </div>
+                            </div>
+                            <div class="row align-items-start" ng-show="showFileError">
+                                <div class="col-12 text-center text-danger">
+                                    The image must be PNG, JPG or GIF and cannot exceed 50 KB
+                                </div>
+                            </div>
+                            <div class="row recipeInfoContainer">
+                                <div class="form-group row">
+                                    <div class="col-4" style="padding-right: 0">
+                                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                            <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                                            <input type="number" class="form-control form-control-sm" id="time" name="time" ng-model="recipe.time" 
+                                                   ng-class="{ 'is-invalid' : (editForm.time.$error.min || editForm.time.$error.max) && !editForm.time.$pristine }"
+                                                   maxlength="3" size="3" value="{{recipe.time}}" min="1" max="600" required>    
+                                        </div>
+                                    </div>
+                                    <div class="col-3" style="padding-right: 0">
+                                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                            <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                                            <input type="number" class="form-control form-control-sm" id="servings" name="servings" 
+                                                   ng-model="recipe.servings" ng-class="{ 'is-invalid' : (editForm.servings.$error.min || editForm.servings.$error.max) && !editForm.servings.$pristine }"
+                                                   maxlength="2" size="2" value="{{recipe.servings}}" min="1" max="12" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                            <div class="input-group-addon"><i class="fa fa-graduation-cap"></i></div>
+                                            <select class="form-control form-control-sm" id="level" ng-model="recipe.level" required>
+                                                <option class="capitalize" ng-repeat="lvl in levels" 
+                                                        ng-selected="lvl === recipe.level">{{lvl}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span ng-show="(editForm.time.$error.min || editForm.time.$error.max) && !editForm.time.$pristine" 
+                                                class="text-danger">Minutes between 1 and 600</span>
+                                        <span ng-show="(editForm.servings.$error.min || editForm.servings.$error.max) && !editForm.servings.$pristine" 
+                                              class="text-danger">Servings between 1 and 12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <div class="form-group">
+                                        <select class="form-control" id="keywords" multiple="multiple" 
+                                                aria-describedby="keywordHelp" ng-model="recipe.keywords">
+                                            <option class="capitalize" ng-repeat="key in allKeywords" 
+                                                    ng-selected="recipe.keywords.includes(key)">{{key}}</option>
+                                        </select>
+                                        <small id="keywordHelp" class="form-text text-muted">
+                                            Select all the tags that apply to this recipe.
+                                            Hold down the Ctrl (windows) / Command (Mac) button to select multiple options
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-12 text-left zeroLeftMargin">
+                            <div class="form-group">
+                                <textarea class="form-control" id="directions" name="directions" rows="12" ng-model="recipe.directions"
+                                          ng-class="{ 'is-invalid' : editForm.directions.$error.required && !editForm.directions.$pristine }"
+                                          aria-describedby="directionHelp" style="overflow:auto;resize:none" required>{{recipe.directions}}</textarea>
+                                <span ng-show="editForm.directions.$error.required && !editForm.directions.$pristine" 
+                                      class="invalid-feedback">The directions are required</span>
+                                <small id="directionHelp" class="form-text text-muted">
+                                    Write here the directions. Please, use a semicolon to mark the end of each step.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <button type="submit" class="btn mybutton" ng-disabled="editForm.$invalid">Save</button>
+                    </div>
+                    
+                </form>
+                
+            </div>
+        
+        </div>
+        
+    </div>
+

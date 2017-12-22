@@ -1,0 +1,35 @@
+
+
+
+    <div class="container">
+        <div class="row mb-4 mt-4">
+            <div class="col-sm-12">
+                <button type="button" class="btn mybutton pull-right" ng-click="addRecipe()">Add new recipe</button>
+            </div>
+        </div>
+        <div class="row" ng-if="!showRecipes">
+            <h3>{{loadingMessage}}</h3>
+        </div>
+        <div class="row text-center" ng-if="showRecipes">
+
+            <div class="col-lg-3 col-md-6 mb-4" ng-repeat="recipe in recipes">
+                <div class="card"> 
+                    <img class="card-img-top" src="{{recipe.image}}" ng-click="seeDetail(recipe._id)">
+                    <div class="card-body" ng-click="seeDetail(recipe._id)">
+                        <h4 class="card-title">{{recipe.name}}</h4>
+                        <p class="card-text">{{recipe.description}}</p>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn mybutton" ng-click="editRecipe(recipe._id)">Edit</button>
+                        <span>&nbsp;</span>
+                        <button type="button" class="btn mybutton" ng-click="deleteRecipe(recipe._id)">Delete</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>  
+
+
+    </div>
+
+
